@@ -1,9 +1,3 @@
-/*
-* U8g based library that focuses on providing a MockU8g class that can be used for testing
-* Additional U8g types can be added at the bottom of this doc to increase the functionality of this lib
-* --Simplified from the U8g original so the functionality is more limited
-*/
-
 #ifndef _CPP_U8GLIBCLONE
 #define _CPP_U8GLIBCLONE
 
@@ -13,6 +7,8 @@
 
 
 //Uses a mock U8G Object~~relies heavily on standard U8GLib so not suggested for use together
+
+
 
 class U8GLIB : public Print
 {
@@ -115,7 +111,7 @@ class U8GLIB : public Print
     
     const char* drawStr(u8g_uint_t x, u8g_uint_t y, const char *s){ //ONLY FUNCTION REALLY USED
 			u8g_DrawStr(&u8g, x, y, s);
-			return 0; 
+			return s; 
    }
     void setFontPosBaseline(void) { u8g_SetFontPosBaseline(&u8g); }
     void setFontPosBottom(void) { u8g_SetFontPosBottom(&u8g); }
