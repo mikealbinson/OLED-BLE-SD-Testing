@@ -12,7 +12,7 @@ OLED::OLED () {
 	u8g->setColorIndex(1);
 }
 
-OLED::OLED(bool TestSwitch) { //creates MockOLED object if input is true--based on U8gLibClone library
+OLED::OLED(bool TestSwitch) { //creates mockOLED object if input is true
   if (TestSwitch == true) 
 	{
     MOCKu8g = new U8GLIB_SSD1306_128X32MOCK(U8G_I2C_OPT_NONE);
@@ -24,8 +24,8 @@ OLED::OLED(bool TestSwitch) { //creates MockOLED object if input is true--based 
   }
 }
 
-
 void OLED::drawSetup() {
+	//const char* final;
   u8g->firstPage();
   do {
     u8g->setFont(u8g_font_unifont);
@@ -36,15 +36,16 @@ void OLED::drawSetup() {
 
 const char* OLED::drawGeneral(String stringToPrint) {
 	const char* conversion;
+	const char* smaller;
   conversion = stringToPrint.c_str();
   u8g->firstPage();
   do {
-    u8g->setFont(u8g_font_unifont);
-    u8g->drawStr( 0, 22, conversion);
-  } while ( u8g->nextPage() );
+		u8g->setFont(u8g_font_unifont);
+		smaller = u8g->drawStr( 0, 22, conversion);  
+} while ( u8g->nextPage() );
   delay(3000);
+  //Serial.println(smaller); //interior function check
+	return smaller;
 }
 
-
-
-//Done Shortening --Start Testing tomorrow
+//Still hoping to include a bitmap fxn at some point if I can figure out how to get a bitmap in the proper format
