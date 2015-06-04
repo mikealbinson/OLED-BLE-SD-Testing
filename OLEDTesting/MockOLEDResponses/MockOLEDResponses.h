@@ -10,6 +10,7 @@ int printToOLED (String printThis);
 class MockOLED{
 	private:
 	U8GLIB_SSD1306_128X32MOCK *MOCKu8g;
+	bool exists;
 		
 	
   public:
