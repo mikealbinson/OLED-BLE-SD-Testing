@@ -13,11 +13,12 @@ MockOLED::MockOLED () {
 	MOCKu8g = new U8GLIB_SSD1306_128X32MOCK(U8G_I2C_OPT_NONE);
   MOCKu8g->getMode() == U8G_MODE_BW;
   MOCKu8g->setColorIndex(1);
-  TestTrue ("OLED init test", MOCKu8g);
+	exists=true;
 }
 
 void MockOLED::drawSetupMock(MockOLED& obj) {
-	//const char* final;
+	Serial.begin (9600); //alternately comment out if using more than one setup function
+	TestTrue ("OLED init test", obj.exists);
 	int printed = obj.MockPrintToOLED ("Setting Up"); //There's an interior method here that interacts with the OLED
 	TestEqual ("drawSetup Print Check", printed, 1 );
 }
