@@ -17,13 +17,13 @@ class MockFile{
 public:
 	MockFile();
 	bool read();
-	bool read (char* interest, int that);
+	const char* read (const char* interest, int that);
 	bool close();
 	String println(String lineToPrint);
 	bool available();
 	
 private:
-	String readerString = "Hello There";
+	String readerString = "HelloYouThere";
 };
 
 class MockSdFat {
