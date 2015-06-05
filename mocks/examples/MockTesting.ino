@@ -18,7 +18,7 @@ void setup() {
   oled1.drawSetupMock(oled1);
   SDB.SDBeaconSetup (Sdfat);
   stringInterface = ble.readIncoming();
-  TestTrue ("The ticket is found on the SD", SDB.searchDatabaseForTicket (stringInterface, Sdfat, myFile));
+  SDB.searchDatabaseForTicket (stringInterface, Sdfat, myFile);
   oled1.drawGeneralMock ("TicketTypeDisplayed", oled1);
   endOfScenario ();
 }
