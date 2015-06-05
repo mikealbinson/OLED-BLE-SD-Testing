@@ -8,7 +8,7 @@ void testingScenario (){
   Serial.println (F("and then display if it exists and its type"));
   Serial.println (F(""));
   Serial.println (F(""));
-  Serial.println (F("Scenario: User customer up to the beacon and wants their ticket scanned"));
+  Serial.println (F("Scenario: Customer walks up to the beacon and wants their ticket scanned"));
 }
 
 void endOfScenario (){
@@ -24,9 +24,8 @@ bool MockFile :: read(){
 	return true;
 }
 
-bool MockFile :: read (char* interest, int that){
-	Serial.println (readerString);
-	return true;
+const char* MockFile :: read (const char* interest, int that){
+	return readerString.c_str();
 }
 
 bool MockFile :: close (){
@@ -80,25 +79,28 @@ void MockSDBeacon::SDBeaconSetup (MockSdFat& SD) {//Checked and good YEP
     return;
   }
   Serial.println(F("initialization done."));
-	TestTrue ("The SD is setup", SD.available());
+	TestTrue ("The SD setup", SD.available());
 }
 
 bool MockSDBeacon::searchDatabaseForTicket(String TicketString, MockSdFat& SD, MockFile& myFile){ //No way to sensibly shorten
 		const char* TicketNo = TicketString.c_str();
+		bool report = false;
+		//Serial.println (TicketNo);
 		//myFile = SD.open("test.txt");  
 		if (myFile.available()) {
-    	char buf[16];
-    	myFile.read(buf, 16);
-    	if (strncmp(buf, TicketNo, 14) == 0)
+			const char* buf;
+    	const char* reader = myFile.read(buf, 16); //couldn't quite get this to work properly--still working on it
+    	if (strncmp(reader, TicketNo, 14) == 0)
     	{
-      	Serial.println(F("Match!"));
-      	return true;
-    	}
-    	else {
+      	//Serial.println(F("Match!"));
+				report = true; 
+      }
+     	else {
 				Serial.println ("No Match");
-      	return false;
     	}
     myFile.close();
+		TestTrue ("Database search", report);
+		return report;
   }
 	else {
 	Serial.println(F("error opening file")); //error
@@ -174,7 +176,7 @@ const char* MockOLED::drawGeneralMock(String stringToPrint,MockOLED& obj) {
 	const char* smaller;
   conversion = stringToPrint.c_str();
 	int printed = obj.MockPrintToOLED (conversion); //There's an interior method here that interacts with the OLED directly and that needed to be changed
-	TestEqual ("The type is displayed on the OLED", printed, 1 );
+	TestEqual ("The ticket type display on the OLED", printed, 1 );
 	return conversion;
 }
 
@@ -200,7 +202,7 @@ void MockBLE::TflyBLESetup(){  //Use only in the setup loop  YEP
   ble_set_name ("TFLY");
   ble_begin ();
   //Serial.begin (57600);
-	TestTrue ("The ble is setup", true);
+	TestTrue ("The ble setup", true);
 }
 
 void MockBLE::clearParsingSetups(String stringToClear, char charArrayToClear[]){
@@ -232,7 +234,7 @@ void MockBLE::beaconSendData(){
 String MockBLE::readIncoming(){ //No good way to significantly shorten this one--consider revising
   int i=0;
   char stringBase[CHARS_TO_READ];
-  char sendByteByByte [CHARS_TO_READ] = {"HelloYouThere"};
+  String designatedOutput = "HelloYouThere";
 	for (int i=0; i<CHARS_TO_READ; i++){
     stringBase[i] = 1;
   }
@@ -241,7 +243,7 @@ String MockBLE::readIncoming(){ //No good way to significantly shorten this one-
 	  int i=0;
     while (ble_available){
       char carrier = MockBLE_read(i);
-      Serial.write (carrier);
+      //Serial.write (carrier);
       if (i<CHARS_TO_READ){
         stringBase [i] = carrier;
       }
@@ -252,9 +254,9 @@ String MockBLE::readIncoming(){ //No good way to significantly shorten this one-
     for (i=0;i<CHARS_TO_READ;i++){
       finalString = finalString + stringBase[i];
     }
-    Serial.println("");
-    Serial.println (finalString);
-	  TestEqual ("we read ticket data from the BLE", finalString, sendByteByByte);
+    //Serial.println("");
+    //Serial.println (finalString);
+	  TestEqual ("we read ticket data from the BLE", finalString, designatedOutput);
     return finalString;
   }
 }
